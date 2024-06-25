@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+
+@layer base {
+        * {
+                @apply box-border list-none p-0 m-0 scroll-smooth;
+        }
+
+        body {
+                @apply text-white min-h-screen font-primary;
+        }
+}

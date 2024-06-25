@@ -8,8 +8,8 @@ function App() {
                 <div className="flex max-w-6xl mx-auto">
                         <Routes>
                                 <Route path="/" element={<HomePage />} />
-                                <Route path="/signup" element={<SignUpPage />} />
-                                <Route path="/login" element={<SignInPage />} />
+                                <Route path="/sign-up" element={<SignUpPage />} />
+                                <Route path="/sign-in" element={<SignInPage />} />
                         </Routes>
                 </div>
         );

@@ -5,6 +5,9 @@ export default {
         content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
         theme: {
                 extend: {},
+                fontFamily: {
+                        primary: ['League Spartan', 'sans-serif'],
+                },
         },
         plugins: [daisyui],
 
