@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import CreatePost from './CreatePost.jsx';
-import Posts from '../../components/shared/Posts.jsx';
+import Posts from '../../components/shared/PostsList.jsx';
 
 const HomePage = () => {
         const [feedType, setFeedType] = useState('forYou');
