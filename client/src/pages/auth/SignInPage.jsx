@@ -63,7 +63,7 @@ const SignInPage = () => {
                                         <p className="text-white text-lg">{"Don't"} have an account?</p>
                                         <Link to="/sign-up">
                                                 <button className="btn rounded-full text-base btn-primary text-white btn-outline w-full">
-                                                        Sign up
+                                                        Sign Up
                                                 </button>
                                         </Link>
                                 </div>
