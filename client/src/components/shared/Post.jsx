@@ -27,7 +27,7 @@ const Post = ({ post }) => {
 
         return (
                 <>
-                        <div className="flex gap-2 items-start p-4 border-b border-gray-700">
+                        <div className="flex gap-2 items-start p-4 border-b border-gray-900">
                                 <div className="avatar">
                                         <Link
                                                 to={`/profile/${postOwner.username}`}
@@ -41,7 +41,7 @@ const Post = ({ post }) => {
                                                 <Link to={`/profile/${postOwner.username}`} className="font-bold">
                                                         {postOwner.fullName}
                                                 </Link>
-                                                <span className="text-gray-700 flex gap-1 text-sm">
+                                                <span className="text-gray-500 flex gap-1 text-md">
                                                         <Link to={`/profile/${postOwner.username}`}>
                                                                 @{postOwner.username}
                                                         </Link>
@@ -62,7 +62,7 @@ const Post = ({ post }) => {
                                                 {post.img && (
                                                         <img
                                                                 src={post.img}
-                                                                className="h-80 object-contain rounded-lg border border-gray-700"
+                                                                className="h-80 object-contain rounded-lg border border-gray-900"
                                                                 alt=""
                                                         />
                                                 )}
