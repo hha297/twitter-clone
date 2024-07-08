@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { MdPassword } from 'react-icons/md';
 import XSvg from '../../components/svgs/X.jsx';
 import { FaUser } from 'react-icons/fa';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const SignInPage = () => {
         const [formData, setFormData] = useState({
@@ -11,16 +13,50 @@ const SignInPage = () => {
                 password: '',
         });
 
+        const queryClient = useQueryClient();
+        const {
+                mutate: signInMutation,
+                isPending,
+                isError,
+                error,
+        } = useMutation({
+                mutationFn: async ({ username, password }) => {
+                        try {
+                                const res = await fetch('/api/auth/sign-in', {
+                                        method: 'POST',
+                                        headers: {
+                                                'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                                username,
+                                                password,
+                                        }),
+                                });
+
+                                const data = await res.json();
+                                if (!res.ok) {
+                                        throw new Error(data.error || 'Something went wrong');
+                                }
+                        } catch (error) {
+                                throw new Error(error);
+                        }
+                },
+                retry: false,
+                onSuccess: () => {
+                        queryClient.invalidateQueries({
+                                queryKey: ['authUser'],
+                        });
+                },
+        });
+
         const handleSubmit = (e) => {
                 e.preventDefault();
-                console.log(formData);
+                signInMutation(formData);
         };
 
         const handleInputChange = (e) => {
                 setFormData({ ...formData, [e.target.name]: e.target.value });
         };
-
-        const isError = false;
 
         return (
                 <div className="max-w-screen-xl mx-auto flex h-screen">
@@ -55,9 +91,9 @@ const SignInPage = () => {
                                                 />
                                         </label>
                                         <button className="btn rounded-full btn-primary text-white text-base">
-                                                Sign In
+                                                {isPending ? 'Loading...' : 'Sign In'}
                                         </button>
-                                        {isError && <p className="text-red-500">Something went wrong</p>}
+                                        {isError && <p className="text-red-500">{error.message}</p>}
                                 </form>
                                 <div className="flex flex-col gap-2 mt-4">
                                         <p className="text-white text-lg">{"Don't"} have an account?</p>

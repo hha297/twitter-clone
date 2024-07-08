@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { MdOutlineMail } from 'react-icons/md';
@@ -16,7 +16,7 @@ const SignUpPage = () => {
                 fullName: '',
                 password: '',
         });
-
+        const navigate = useNavigate();
         const { mutate, isError, isPending, error } = useMutation({
                 mutationFn: async ({ email, username, fullName, password }) => {
                         try {
@@ -29,7 +29,7 @@ const SignUpPage = () => {
                                 });
 
                                 const data = await res.json();
-                                console.log(data.error);
+
                                 if (!res.ok) throw new Error(data.error || 'Failed to create account!');
                                 if (data.error) throw new Error(data.error);
 
@@ -42,6 +42,7 @@ const SignUpPage = () => {
                 },
                 onSuccess: () => {
                         toast.success('Account created successfully');
+                        navigate('/sign-in');
                 },
         });
 

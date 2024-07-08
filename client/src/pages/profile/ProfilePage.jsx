@@ -10,6 +10,7 @@ import { FaLink } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
 import Posts from '../../components/shared/PostsList.jsx';
 import { POSTS } from '../../utils/db/dummyDb.js';
+import { useQuery } from '@tanstack/react-query';
 
 const ProfilePage = () => {
         const [coverImg, setCoverImg] = useState(null);
@@ -26,10 +27,10 @@ const ProfilePage = () => {
                 _id: '1',
                 fullName: 'John Doe',
                 username: 'johndoe',
-                profileImg: '/avatars/boy2.png',
+                profileImg: '/avatars/avatar-placeholder.png',
                 coverImg: '/cover.png',
                 bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                link: 'https://youtube.com/@asaprogrammer_',
+                link: 'https://www.facebook.com/hha.2907',
                 following: ['1', '2', '3'],
                 followers: ['1', '2', '3'],
         };
