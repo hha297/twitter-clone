@@ -21,14 +21,15 @@ const ProfilePage = () => {
         const profileImgRef = useRef(null);
 
         const isLoading = false;
+
         const isMyProfile = true;
 
         const user = {
                 _id: '1',
                 fullName: 'John Doe',
                 username: 'johndoe',
-                profileImg: '/avatars/avatar-placeholder.png',
-                coverImg: '/cover.png',
+                profileImg: '/avatar-placeholder.png',
+                coverImg: '/cover.jpg',
                 bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                 link: 'https://www.facebook.com/hha.2907',
                 following: ['1', '2', '3'],

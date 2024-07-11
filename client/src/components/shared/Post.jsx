@@ -66,8 +66,6 @@ const Post = ({ post }) => {
                                                 to={`/profile/${postOwner.username}`}
                                                 className="w-8 rounded-full overflow-hidden"
                                         >
-                                                {' '}
-                                                */
                                                 <img src={postOwner.profileImg || '/avatar-placeholder.png'} />
                                         </Link>
                                 </div>
