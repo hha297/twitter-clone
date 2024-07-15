@@ -1,35 +1,48 @@
 import { Link } from 'react-router-dom';
 
 import { IoSettingsOutline } from 'react-icons/io5';
-import { FaUser } from 'react-icons/fa';
+import { FaTrash, FaUser } from 'react-icons/fa';
 import { FaHeart } from 'react-icons/fa6';
 import LoadingSpinner from '../../components/shared/LoadingSpinner.jsx';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 const NotificationPage = () => {
-        const isLoading = false;
-        const notifications = [
-                {
-                        _id: '1',
-                        from: {
-                                _id: '1',
-                                username: 'johndoe',
-                                profileImg: '/avatar-placeholder.png',
-                        },
-                        type: 'follow',
+        const queryClient = useQueryClient();
+        const { data: notifications, isLoading } = useQuery({
+                queryKey: ['notifications'],
+                queryFn: async () => {
+                        try {
+                                const res = await fetch('/api/notifications');
+                                const data = await res.json();
+                                if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+                                return data;
+                        } catch (error) {
+                                throw new Error(error.message);
+                        }
                 },
-                {
-                        _id: '2',
-                        from: {
-                                _id: '2',
-                                username: 'janedoe',
-                                profileImg: '/avatar-placeholder.png',
-                        },
-                        type: 'like',
-                },
-        ];
+        });
 
-        const deleteNotifications = () => {
-                alert('All notifications deleted');
-        };
+        const { mutate: deleteNotifications } = useMutation({
+                mutationFn: async () => {
+                        try {
+                                const res = await fetch('/api/notifications', {
+                                        method: 'DELETE',
+                                });
+                                const data = await res.json();
+                                if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+                                return data;
+                        } catch (error) {
+                                throw new Error(error);
+                        }
+                },
+                onSuccess: () => {
+                        toast.success('Notification deleted successfully.');
+                        queryClient.invalidateQueries(['notifications']);
+                },
+                onError: (error) => {
+                        toast.error(error.message);
+                },
+        });
 
         return (
                 <>
