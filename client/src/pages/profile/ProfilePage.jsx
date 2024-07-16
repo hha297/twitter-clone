@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 import ProfileHeaderSkeleton from '../../components/skeletons/ProfileHeaderSkeleton';
 import EditProfileModal from './EditProfileModal';
@@ -11,6 +11,7 @@ import { MdEdit } from 'react-icons/md';
 import Posts from '../../components/shared/PostsList.jsx';
 import { POSTS } from '../../utils/db/dummyDb.js';
 import { useQuery } from '@tanstack/react-query';
+import { formatMemberSinceDate } from '../../utils/date/index.js';
 
 const ProfilePage = () => {
         const [coverImg, setCoverImg] = useState(null);
@@ -20,21 +21,27 @@ const ProfilePage = () => {
         const coverImgRef = useRef(null);
         const profileImgRef = useRef(null);
 
-        const isLoading = false;
-
         const isMyProfile = true;
+        const { username } = useParams();
 
-        const user = {
-                _id: '1',
-                fullName: 'John Doe',
-                username: 'johndoe',
-                profileImg: '/avatar-placeholder.png',
-                coverImg: '/cover.jpg',
-                bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                link: 'https://www.facebook.com/hha.2907',
-                following: ['1', '2', '3'],
-                followers: ['1', '2', '3'],
-        };
+        const {
+                data: user,
+                isLoading,
+                refetch,
+                isRefetching,
+        } = useQuery({
+                queryKey: ['userProfile'],
+                queryFn: async () => {
+                        try {
+                                const res = await fetch(`/api/users/profile/${username}`, {});
+                                const data = res.json();
+                                if (!res.ok) throw new Error(data.message || 'Something went wrong!');
+                                return data;
+                        } catch (error) {
+                                throw new Error(error);
+                        }
+                },
+        });
 
         const handleImgChange = (e, state) => {
                 const file = e.target.files[0];
@@ -47,15 +54,22 @@ const ProfilePage = () => {
                         reader.readAsDataURL(file);
                 }
         };
+        const memberSinceDate = formatMemberSinceDate(user?.createdAt);
+
+        useEffect(() => {
+                refetch();
+        }, [feedType, username, refetch]);
 
         return (
                 <>
                         <div className="flex-[4_4_0]  border-r border-gray-700 min-h-screen ">
                                 {/* HEADER */}
-                                {isLoading && <ProfileHeaderSkeleton />}
-                                {!isLoading && !user && <p className="text-center text-lg mt-4">User not found</p>}
+                                {(isLoading || isRefetching) && <ProfileHeaderSkeleton />}
+                                {!isLoading && !isRefetching && !user && (
+                                        <p className="text-center text-lg mt-4">User not found</p>
+                                )}
                                 <div className="flex flex-col">
-                                        {!isLoading && user && (
+                                        {!isLoading && !isRefetching && user && (
                                                 <>
                                                         <div className="flex gap-10 px-4 py-2 items-center">
                                                                 <Link to="/">
@@ -170,12 +184,14 @@ const ProfilePage = () => {
                                                                                         <>
                                                                                                 <FaLink className="w-3 h-3 text-slate-500" />
                                                                                                 <a
-                                                                                                        href="https://www.facebook.com/hha.2907"
+                                                                                                        href={
+                                                                                                                user?.link
+                                                                                                        }
                                                                                                         target="_blank"
                                                                                                         rel="noreferrer"
                                                                                                         className="text-sm text-blue-500 hover:underline"
                                                                                                 >
-                                                                                                        facebook.com/hha.2907
+                                                                                                        {user?.link}
                                                                                                 </a>
                                                                                         </>
                                                                                 </div>
@@ -183,7 +199,7 @@ const ProfilePage = () => {
                                                                         <div className="flex gap-2 items-center">
                                                                                 <IoCalendarOutline className="w-4 h-4 text-slate-500" />
                                                                                 <span className="text-sm text-slate-500">
-                                                                                        Joined July 2021
+                                                                                        {memberSinceDate}
                                                                                 </span>
                                                                         </div>
                                                                 </div>
@@ -229,7 +245,7 @@ const ProfilePage = () => {
                                                 </>
                                         )}
 
-                                        <Posts />
+                                        <Posts username={username} userId={user?._id} feedType={feedType} />
                                 </div>
                         </div>
                 </>
