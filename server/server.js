@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
 import authRoutes from './routes/auth.routes.js';
@@ -14,6 +15,8 @@ cloudinary.config({
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+const __dirname = path.resolve();
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json({ limit: '50mb' }));
@@ -24,6 +27,14 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+        app.use(express.static(path.join(__dirname, '/client/dist')));
+
+        app.get('*', (req, res) => {
+                res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+        });
+}
 
 // Add a route for the root URL
 app.get('/', (req, res) => {
