@@ -14,7 +14,7 @@ const EditProfileModal = ({ authUser }) => {
         });
 
         const queryClient = useQueryClient();
-        const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
+        const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useMutation({
                 mutationFn: async () => {
                         try {
                                 const res = await fetch(`/api/users/update`, {
